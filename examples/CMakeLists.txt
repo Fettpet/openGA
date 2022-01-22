@@ -1,0 +1,8 @@
+add_subdirectory(iga-colors)
+add_subdirectory(mo-1)
+add_subdirectory(mo-dtlz2)
+add_subdirectory(so-1)
+add_subdirectory(so-bind)
+add_subdirectory(so-init-solutions)
+add_subdirectory(so-multi-source)
+add_subdirectory(so-rastrigin)

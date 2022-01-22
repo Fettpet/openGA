@@ -5,8 +5,8 @@ project(
     VERSION 1.1.0
     HOMEPAGE_URL "https://github.com/Arash-codedv/openGA")
 
-add_library(openGA INTERFACE)
-target_include_directories(openGA INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src/>)
+add_library(openGA INTERFACE openGA.hpp)
+target_include_directories(openGA INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>)
 install(TARGETS openGA
         EXPORT openGA_Targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
