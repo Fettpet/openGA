@@ -1,0 +1,8 @@
+find_package(GLUT)
+if(GLUT_FOUND)
+    include_directories(${GLUT_INCLUDE_DIR})
+    add_executable(iga-colors iga-colors.cpp gui.hpp)
+    target_link_libraries(iga-colors openGA)
+else()
+    message(WARNING "GLUT not found!")
+endif()
