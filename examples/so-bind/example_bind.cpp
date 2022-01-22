@@ -24,8 +24,8 @@ struct MyMiddleCost {
     double cost_sqsin;
 };
 
-typedef EA::Genetic<MySolution, MyMiddleCost> GA_Type;
-typedef EA::GenerationType<MySolution, MyMiddleCost> Generation_Type;
+using GaType = EA::Genetic<MySolution, MyMiddleCost>;
+using GenerationType = EA::GenerationType<MySolution, MyMiddleCost>;
 
 class MyClass {
 public:
@@ -93,7 +93,7 @@ public:
         return X_new;
     }
 
-    double calculate_SO_total_fitness(const GA_Type::thisChromosomeType& X) {
+    double calculate_SO_total_fitness(const GaType::ThisChromosomeType& X) {
         // finalize the cost
         double cost1, cost2;
         cost1 = X.middle_costs.cost_distance2;
@@ -128,8 +128,8 @@ int main() {
     using std::placeholders::_2;
     using std::placeholders::_3;
 
-    GA_Type ga_obj;
-    ga_obj.problem_mode = EA::GA_MODE::SOGA;
+    GaType ga_obj;
+    ga_obj.problem_mode = EA::GaMode::SOGA;
     ga_obj.multi_threading = true;
     ga_obj.idle_delay_us = 1; // switch between threads quickly
     ga_obj.verbose = false;
