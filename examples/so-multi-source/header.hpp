@@ -1,6 +1,7 @@
 // This library is free and distributed under
 // Mozilla Public License Version 2.0.
 
+#include <openGA.hpp>
 #include <string>
 #include <vector>
 
@@ -18,8 +19,8 @@ struct MyMiddleCost {
     double cost;
 };
 
-typedef EA::Genetic<MySolution, MyMiddleCost> GA_Type;
-typedef EA::GenerationType<MySolution, MyMiddleCost> Generation_Type;
+using GaType = EA::Genetic<MySolution, MyMiddleCost>;
+using GenerationType = EA::GenerationType<MySolution, MyMiddleCost>;
 
 void init_genes(MySolution& p, const std::function<double(void)>& rnd01);
 
@@ -29,7 +30,7 @@ MySolution mutate(const MySolution& X_base, const std::function<double(void)>& r
 
 MySolution crossover(const MySolution& X1, const MySolution& X2, const std::function<double(void)>& rnd01);
 
-double calculate_SO_total_fitness(const GA_Type::thisChromosomeType& X);
+double calculate_SO_total_fitness(const GaType::ThisChromosomeType& X);
 
 void SO_report_generation(
     int generation_number,

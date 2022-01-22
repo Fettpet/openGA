@@ -63,7 +63,7 @@ MySolution crossover(const MySolution& X1, const MySolution& X2, const std::func
     return X_new;
 }
 
-double calculate_SO_total_fitness(const GA_Type::thisChromosomeType& X) {
+double calculate_SO_total_fitness(const GaType::ThisChromosomeType& X) {
     // finalize the cost
     return X.middle_costs.cost;
 }
@@ -89,8 +89,8 @@ void run_test(bool multi_threading, bool dynamic_threading, int idle_delay_us, s
     EA::Chronometer timer;
     timer.tic();
 
-    GA_Type ga_obj;
-    ga_obj.problem_mode = EA::GA_MODE::SOGA;
+    GaType ga_obj;
+    ga_obj.problem_mode = EA::GaMode::SOGA;
     ga_obj.multi_threading = multi_threading;
     ga_obj.dynamic_threading = dynamic_threading;
     ga_obj.idle_delay_us = idle_delay_us;

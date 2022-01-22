@@ -20,8 +20,8 @@ struct MyMiddleCost {
     double cost_f2;
 };
 
-typedef EA::Genetic<MySolution, MyMiddleCost> GA_Type;
-typedef EA::GenerationType<MySolution, MyMiddleCost> Generation_Type;
+using GaType = EA::Genetic<MySolution, MyMiddleCost>;
+using GenerationType = EA::GenerationType<MySolution, MyMiddleCost>;
 
 void init_genes(MySolution& p, const std::function<double(void)>& rnd01) {
     p.x1 = 1.0 * rnd01();
@@ -63,7 +63,7 @@ MySolution crossover(const MySolution& X1, const MySolution& X2, const std::func
     return X_new;
 }
 
-std::vector<double> calculate_MO_objectives(const GA_Type::thisChromosomeType& X) {
+std::vector<double> calculate_MO_objectives(const GaType::ThisChromosomeType& X) {
     return {X.middle_costs.cost_f1, X.middle_costs.cost_f2};
 }
 
@@ -82,7 +82,7 @@ void MO_report_generation(
     std::cout << "}" << std::endl;
 }
 
-void save_results(const GA_Type& ga_obj) {
+void save_results(const GaType& ga_obj) {
     std::ofstream output_file;
     output_file.open("./bin/result_mo2.txt");
     output_file << "N"
@@ -108,8 +108,8 @@ int main() {
     EA::Chronometer timer;
     timer.tic();
 
-    GA_Type ga_obj;
-    ga_obj.problem_mode = EA::GA_MODE::NSGA_III;
+    GaType ga_obj;
+    ga_obj.problem_mode = EA::GaMode::NSGA_III;
     ga_obj.dynamic_threading = false;
     ga_obj.multi_threading = true;
     ga_obj.idle_delay_us = 1; // switch between threads quickly

@@ -26,8 +26,8 @@ struct MyMiddleCost {
     double cost;
 };
 
-typedef EA::Genetic<MySolution, MyMiddleCost> GA_Type;
-typedef EA::GenerationType<MySolution, MyMiddleCost> Generation_Type;
+using GaType = EA::Genetic<MySolution, MyMiddleCost>;
+using GenerationType = EA::GenerationType<MySolution, MyMiddleCost>;
 
 void init_genes(MySolution& p, const std::function<double(void)>& rnd01) {
     for (int i = 0; i < 5; i++) p.x.push_back(5.12 * 2.0 * (rnd01() - 0.5));
@@ -65,7 +65,7 @@ MySolution crossover(const MySolution& X1, const MySolution& X2, const std::func
     return X_new;
 }
 
-double calculate_SO_total_fitness(const GA_Type::thisChromosomeType& X) {
+double calculate_SO_total_fitness(const GaType::ThisChromosomeType& X) {
     // finalize the cost
     return X.middle_costs.cost;
 }
@@ -111,8 +111,8 @@ int main() {
     EA::Chronometer timer;
     timer.tic();
 
-    GA_Type ga_obj;
-    ga_obj.problem_mode = EA::GA_MODE::SOGA;
+    GaType ga_obj;
+    ga_obj.problem_mode = EA::GaMode::SOGA;
     ga_obj.multi_threading = true;
     ga_obj.dynamic_threading = false;
     ga_obj.idle_delay_us = 0; // switch between threads quickly
