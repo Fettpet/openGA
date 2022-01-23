@@ -73,9 +73,10 @@ struct GenerationTypeSOAbstract {
         , average_cost(generation.average_cost) {}
 };
 
+template<typename T>
 class Matrix {
     unsigned int n_rows, n_cols;
-    vector<double> data;
+    vector<T> data;
 
 public:
     Matrix()
@@ -88,15 +89,15 @@ public:
         , n_cols(n_cols)
         , data(n_rows * n_cols) {}
 
-    void zeros() { std::fill(data.begin(), data.end(), 0); }
+    void zeros() { std::fill(data.begin(), data.end(), static_cast<T>(0)); }
 
     void zeros(unsigned int rows, unsigned int cols) {
         n_rows = rows;
         n_cols = cols;
-        data.assign(rows * cols, 0);
+        data.assign(rows * cols, static_cast<T>(0));
     }
 
-    bool empty() { return (!n_rows) || (!n_cols); }
+    [[nodiscard]] bool empty() { return data.empty(); }
 
     unsigned int get_n_rows() const { return n_rows; }
     unsigned int get_n_cols() const { return n_cols; }
@@ -107,27 +108,27 @@ public:
         data.clear();
     }
 
-    void set_col(unsigned int col_idx, const vector<double>& col_vector) {
+    void set_col(unsigned int col_idx, const vector<T>& col_vector) {
         assert(col_vector.size() == n_rows && "Assigned column vector size mismatch.");
         for (unsigned int i = 0; i < n_rows; i++) (*this)(i, col_idx) = col_vector[i];
     }
 
-    void set_row(unsigned int row_idx, const vector<double>& row_vector) {
+    void set_row(unsigned int row_idx, const vector<T>& row_vector) {
         assert(row_vector.size() == n_cols && "Assigned row vector size mismatch.");
         for (unsigned int i = 0; i < n_cols; i++) (*this)(row_idx, i) = row_vector[i];
     }
 
-    void get_col(unsigned int col_idx, vector<double>& col_vector) const {
+    void get_col(unsigned int col_idx, vector<T>& col_vector) const {
         col_vector.resize(n_rows);
         for (unsigned int i = 0; i < n_rows; i++) col_vector[i] = (*this)(i, col_idx);
     }
 
-    void get_row(unsigned int row_idx, vector<double>& row_vector) const {
+    void get_row(unsigned int row_idx, vector<T>& row_vector) const {
         row_vector.resize(n_cols);
         for (unsigned int i = 0; i < n_cols; i++) row_vector[i] = (*this)(row_idx, i);
     }
 
-    void operator=(const vector<vector<double>>& A) {
+    void operator=(const vector<vector<T>>& A) {
         unsigned int A_rows = (unsigned int)A.size();
         unsigned int A_cols = 0;
         if (A_rows > 0) A_cols = (unsigned int)A[0].size();
@@ -209,9 +210,9 @@ private:
     int average_stall_count;
     int best_stall_count;
     vector<double> ideal_objectives; // for multi-objective
-    Matrix extreme_objectives; // for multi-objective
+    Matrix<double> extreme_objectives; // for multi-objective
     vector<double> scalarized_objectives_min; // for multi-objective
-    Matrix reference_vectors;
+    Matrix<double> reference_vectors;
     unsigned int N_robj;
 
 public:
@@ -306,7 +307,7 @@ public:
             N_threads = 8;
     }
 
-    Matrix get_reference_vectors() { return reference_vectors; }
+    Matrix<double> get_reference_vectors() { return reference_vectors; }
 
     int get_number_reference_vectors(int N_objectives, int N_divisions) {
         return fast_combination_count(N_objectives + N_divisions - 1, N_divisions);
@@ -602,7 +603,7 @@ protected:
         g2.chromosomes.clear();
         if (!N_robj) throw runtime_error("Number of the reduced objectives is zero. A68756541321");
         const unsigned int N_chromosomes = (unsigned int)g.chromosomes.size();
-        Matrix zb_objectives(N_chromosomes, N_robj);
+        Matrix<double> zb_objectives(N_chromosomes, N_robj);
         for (unsigned int i = 0; i < N_chromosomes; i++) {
             vector<double> robj_x;
             if (distribution_objective_reductions)
@@ -615,7 +616,7 @@ protected:
         scalarize_objectives(zb_objectives);
         vector<double> intercepts;
         build_hyperplane_intercepts(intercepts);
-        Matrix norm_objectives((unsigned int)g.chromosomes.size(), (unsigned int)intercepts.size());
+        Matrix<double> norm_objectives((unsigned int)g.chromosomes.size(), (unsigned int)intercepts.size());
         for (unsigned int i = 0; i < N_chromosomes; i++)
             for (unsigned int j = 0; j < N_robj; j++) norm_objectives(i, j) = zb_objectives(i, j) / intercepts[j];
         if (g.chromosomes.size() == population) {
@@ -634,7 +635,7 @@ protected:
         vector<double> distance_ref_vector;
 
         vector<unsigned int> niche_count;
-        Matrix distances; // row: pop, col: ref_vec
+        Matrix<double> distances; // row: pop, col: ref_vec
         associate_to_references(g, norm_objectives, associated_ref_vector, distance_ref_vector, niche_count, distances);
 
         unsigned int last_front_index = 0;
@@ -694,11 +695,11 @@ protected:
 
     void associate_to_references(
         const ThisGenerationType& gen,
-        const Matrix& norm_objectives,
+        const Matrix<double>& norm_objectives,
         vector<unsigned int>& associated_ref_vector,
         vector<double>& distance_ref_vector,
         vector<unsigned int>& niche_count,
-        Matrix& distances) {
+        Matrix<double>& distances) {
         unsigned int N_ref = reference_vectors.get_n_rows();
         unsigned int N_x = (unsigned int)gen.chromosomes.size();
         niche_count.assign(N_ref, 0);
@@ -746,7 +747,7 @@ protected:
             extreme_objectives.get_n_rows() == extreme_objectives.get_n_cols() &&
             "extreme_objectives must be square! A21658463546");
         int n = extreme_objectives.get_n_rows();
-        Matrix L(n, n), U(n, n);
+        Matrix<double> L(n, n), U(n, n);
         L.zeros();
         U.zeros();
         for (int i = 0; i < n; i++) {
@@ -787,7 +788,7 @@ protected:
         return (unsigned int)(std::distance(v.begin(), std::min_element(v.begin(), v.end())));
     }
 
-    void scalarize_objectives(const Matrix& zb_objectives) {
+    void scalarize_objectives(const Matrix<double>& zb_objectives) {
         unsigned int N_objectives = zb_objectives.get_n_cols();
         if (scalarized_objectives_min.empty()) {
             extreme_objectives.zeros(N_objectives, N_objectives);
@@ -991,8 +992,8 @@ protected:
         return result;
     }
 
-    Matrix generate_referenceVectors(int dept, int N_division) {
-        Matrix A;
+    Matrix<double> generate_referenceVectors(int dept, int N_division) {
+        Matrix<double> A;
         A = generate_integerReferenceVectors(dept, N_division);
         for (unsigned int i = 0; i < A.get_n_rows(); i++)
             for (unsigned int j = 0; j < A.get_n_cols(); j++) A(i, j) /= double(N_division);
