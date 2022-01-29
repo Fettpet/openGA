@@ -2,10 +2,15 @@ cmake_minimum_required(VERSION 3.12)
 
 project(openGA VERSION 0.1 LANGUAGES CXX)
 
-option(build_examples "build the examples" ON)
+option(BUILD_OPENGA_EXAMPLES "build the examples" OFF)
+option(BUILD_OPENGA_TESTS "build the unit tests" ON)
 add_subdirectory(src)
 
-if(${build_examples})
-
+if(${BUILD_OPENGA_EXAMPLES})
     add_subdirectory(examples)
+endif()
+
+if(${BUILD_OPENGA_TESTS})
+    include(third-party/googletest.cmake)
+    include(src/tests.cmake)
 endif()
