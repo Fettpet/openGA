@@ -7,6 +7,7 @@ project(
 
 add_library(openGA INTERFACE
     Definitions.hpp
+    Matrix.hpp
     openGA.hpp
 )
 target_include_directories(openGA INTERFACE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/>)
