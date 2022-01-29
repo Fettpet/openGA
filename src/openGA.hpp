@@ -2,6 +2,7 @@
 // Mozilla Public License Version 2.0.
 
 #pragma once
+#include "Definitions.hpp"
 #include <algorithm>
 #include <assert.h>
 #include <atomic>
@@ -17,12 +18,7 @@
 #include <thread>
 #include <vector>
 
-#ifndef NS_EA_BEGIN
-#    define NS_EA_BEGIN namespace EA {
-#    define NS_EA_END }
-#endif
-
-NS_EA_BEGIN;
+NS_EA_BEGIN
 
 using std::atomic;
 using std::cout;
@@ -31,12 +27,6 @@ using std::function;
 using std::runtime_error;
 using std::unique_ptr;
 using std::vector;
-
-#ifdef OPENGA_EXTERN_LOCAL_VARS
-extern std::mutex mtx_rand;
-#else
-std::mutex mtx_rand;
-#endif
 
 enum class GaMode { SOGA, IGA, NSGA_III };
 
