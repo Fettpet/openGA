@@ -74,8 +74,9 @@ public:
                 for (unsigned int j = 0; j < n_cols; j++) (*this)(i, j) = A[i][j];
             }
         }
-        else
-            data.clear();
+        else {
+            clear();
+        }
     }
 
     void print() {
