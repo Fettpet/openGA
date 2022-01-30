@@ -79,17 +79,37 @@ public:
         }
     }
 
-    void print() {
-        for (unsigned int i = 0; i < n_rows; i++) {
-            for (unsigned int j = 0; j < n_cols; j++) cout << "\t" << (*this)(i, j);
-
-            cout << endl;
-        }
-        data.clear();
+    inline T& operator()(unsigned int row, unsigned int col) {
+        checkBorders(row, col);
+        return data[row * n_cols + col];
+    }
+    inline T operator()(unsigned int row, unsigned int col) const {
+        checkBorders(row, col);
+        return data[row * n_cols + col];
     }
 
-    inline double& operator()(unsigned int row, unsigned int col) { return data[row * n_cols + col]; }
-    inline double operator()(unsigned int row, unsigned int col) const { return data[row * n_cols + col]; }
+protected:
+    inline void checkBorders(unsigned int row, unsigned int col) const {
+#ifdef NDEBUG
+        if (col >= n_cols) {
+            throw std::out_of_range("Col is out of range");
+        }
+        if (row >= n_rows) {
+            throw std::out_of_range("Row is out of range");
+        }
+#endif
+    }
 };
+
+template<typename T>
+std::ostream& operator<<(std::ostream& out, const Matrix<T>& mat) {
+    for (unsigned int i = 0; i < mat.get_n_rows(); i++) {
+        for (unsigned int j = 0; j < mat.get_n_cols(); j++) {
+            out << "\t" << mat(i, j);
+        }
+        out << endl;
+    }
+    return out;
+}
 
 NS_EA_END
